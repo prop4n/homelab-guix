@@ -99,7 +99,9 @@ nonguix substitutes. EXTRA and NETWORKING are appended per machine."
                    (git-branch "main")
                    (poll-interval "60s")
                    (reconfigure-mode "direct")
-                   (load-path "modules")
+                   ;; "." resolves (systems base); "modules" resolves the
+                   ;; vendored (bitlatch services) and (metadata services nocloud).
+                   (load-path ".:modules")
                    (allow-downgrades? #t)
                    (reconfigure-timeout "20m")
                    ;; Stream the agent (and the live guix reconfigure output) to
