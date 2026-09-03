@@ -29,11 +29,21 @@
                        (name-servers '("1.1.1.1"))))))
  #:extra-services
  ;; nginx on :8083 — :8080 is taken by BitLatch's observability server.
- ;; The document root is the ./web01-site directory, served straight from the
- ;; store: edit the page, commit, and BitLatch redeploys it.
+ ;; nginx serves the fixed /srv/http; an activation step copies ./web01-site
+ ;; there on every reconfigure. Because the nginx config itself never changes,
+ ;; a front edit shows up without restarting nginx: edit, commit, done.
  (list (service nginx-service-type
                 (nginx-configuration
                  (server-blocks
                   (list (nginx-server-configuration
                          (listen '("8083"))
-                         (root (local-file "web01-site" #:recursive? #t)))))))))
+                         (root "/srv/http"))))))
+       (simple-service 'web01-page activation-service-type
+                       #~(begin
+                           (use-modules (guix build utils))
+                           (mkdir-p "/srv/http")
+                           (copy-recursively #$(local-file "web01-site"
+                                                           #:recursive? #t)
+                                             "/srv/http")
+                           (for-each (lambda (f) (chmod f #o644))
+                                     (find-files "/srv/http"))))))
