@@ -1,0 +1,28 @@
+apiVersion: proxmops.dev/v1
+kind: VirtualMachine
+metadata:
+  name: web01
+  node: pve-node1
+  tags: [homelab, guix, web]
+spec:
+  vmid: 110
+  cores: 4
+  memory: 4096
+  disks:
+    # bus: virtio -> guest /dev/vda, which the Guix image expects.
+    - storage: local-lvm
+      size: 20G
+      bus: virtio
+  net:
+    - bridge: vmbr0
+      model: virtio
+  # The generic Guix image built from systems/template.scm. Upload the qcow2
+  # (image/build.sh) somewhere reachable and put its URL here.
+  image:
+    source: https://YOUR-HOST/homelab.qcow2
+  # NoCloud userData: proxmops turns this into the CIDATA seed ISO that the
+  # nocloud service reads. It tells BitLatch which system this machine is.
+  userData: |
+    #cloud-config
+    ((system-file . "systems/web01.scm"))
+  state: running

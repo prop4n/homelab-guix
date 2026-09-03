@@ -1,0 +1,23 @@
+apiVersion: proxmops.dev/v1
+kind: VirtualMachine
+metadata:
+  name: web02
+  node: pve-node1
+  tags: [homelab, guix]
+spec:
+  vmid: 111
+  cores: 2
+  memory: 2048
+  disks:
+    - storage: local-lvm
+      size: 20G
+      bus: virtio
+  net:
+    - bridge: vmbr0
+      model: virtio
+  image:
+    source: https://YOUR-HOST/homelab.qcow2
+  userData: |
+    #cloud-config
+    ((system-file . "systems/web02.scm"))
+  state: running
