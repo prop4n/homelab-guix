@@ -16,10 +16,12 @@ spec:
   net:
     - bridge: vmbr0
       model: virtio
-  # The generic Guix image built from systems/template.scm. Upload the qcow2
-  # (image/build.sh) somewhere reachable and put its URL here.
+  # The generic Guix image built from systems/template.scm.
+  # A value without "://" is a Proxmox volume ref used as-is (no download):
+  # here the qcow2 uploaded to local:import. An absolute node path also works
+  # (e.g. /var/lib/vz/import/homelab.qcow2), or a https:// URL to download.
   image:
-    source: https://YOUR-HOST/homelab.qcow2
+    source: local:import/homelab.qcow2
   # NoCloud userData: proxmops turns this into the CIDATA seed ISO that the
   # nocloud service reads. It tells BitLatch which system this machine is.
   userData: |

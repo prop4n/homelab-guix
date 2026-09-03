@@ -15,8 +15,9 @@ spec:
   net:
     - bridge: vmbr0
       model: virtio
+  # Proxmox volume ref (no "://") -> used as-is, no download.
   image:
-    source: https://YOUR-HOST/homelab.qcow2
+    source: local:import/homelab.qcow2
   userData: |
     #cloud-config
     ((system-file . "systems/web02.scm"))

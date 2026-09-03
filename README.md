@@ -51,8 +51,15 @@ proxmox/*.yaml    proxmops manifests, one VirtualMachine per machine
    ```sh
    ./image/build.sh                 # -> image/homelab.qcow2
    ```
-4. **Upload** `image/homelab.qcow2` somewhere Proxmox can fetch by URL, and put
-   that URL in `proxmox/*.yaml` (`spec.image.source`).
+4. **Upload the image to Proxmox** local storage and enable the import content
+   type (once):
+   ```sh
+   ssh root@PVE 'mkdir -p /var/lib/vz/import'
+   scp image/homelab.qcow2 root@PVE:/var/lib/vz/import/homelab.qcow2
+   ssh root@PVE 'pvesm set local --content iso,vztmpl,backup,snippets,import'
+   ```
+   The manifests reference it as `local:import/homelab.qcow2` (a volume ref, used
+   as-is with no download). A `https://` URL or an absolute node path also work.
 5. **Adjust** the manifests (`node`, `vmid`, `storage`, `bridge`) to your cluster.
 
 ## Deploy
