@@ -2,7 +2,7 @@ apiVersion: proxmops.dev/v1
 kind: VirtualMachine
 metadata:
   name: web01
-  node: pve-node1
+  node: pve
   tags: [homelab, guix, web]
 spec:
   vmid: 110

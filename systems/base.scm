@@ -133,7 +133,9 @@ the serial console is on ttyS0 so `qm terminal` works."
                  (bootloader grub-bootloader)
                  (targets '("/dev/vda"))
                  (terminal-outputs '(console))))
-    (kernel-arguments '("console=ttyS0,115200"))
+    ;; net.ifnames=0 forces the NIC to be "eth0" (instead of ens18/enp0s18),
+    ;; so static-networking in a machine file can rely on a stable device name.
+    (kernel-arguments '("console=ttyS0,115200" "net.ifnames=0"))
 
     (file-systems (cons (file-system
                           (mount-point "/")
