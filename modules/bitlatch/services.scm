@@ -18,6 +18,7 @@
             bitlatch-configuration-runtime-file
             bitlatch-configuration-reconfigure-mode
             bitlatch-configuration-load-path
+            bitlatch-configuration-log-file
             bitlatch-service-type))
 
 ;;; Commentary:
@@ -71,6 +72,11 @@
   (allow-downgrades?     bitlatch-configuration-allow-downgrades?
                          (default #f))
   (reconfigure-timeout   bitlatch-configuration-reconfigure-timeout
+                         (default #f))
+  ;; Shepherd log file for the daemon (its stdout/stderr, including streamed
+  ;; guix output). #f uses shepherd's default; "/dev/console" shows it on the
+  ;; system console.
+  (log-file              bitlatch-configuration-log-file
                          (default #f))
   ;; Where per-instance overrides are read from; #f disables runtime merging
   ;; (purely declarative mode, no dependency on the nocloud service).
@@ -221,7 +227,8 @@ separate one-shot config service could not reliably run before the daemon."
            (execl bin bin "-config" out "-log-level" #$log-level))))))
 
 (define (bitlatch-shepherd-services config)
-  (let ((runtime-file (bitlatch-configuration-runtime-file config)))
+  (let ((runtime-file (bitlatch-configuration-runtime-file config))
+        (log-file (bitlatch-configuration-log-file config)))
     (list
      ;; The long-running agent.  Its start program renders config.env (waiting
      ;; for the userData reader when needed) and then execs the binary, so no
@@ -235,6 +242,7 @@ separate one-shot config service could not reliably run before the daemon."
       (requirement (if runtime-file '(nocloud networking) '(networking)))
       (start #~(make-forkexec-constructor
                 (list #$(bitlatch-run-program config))
+                #:log-file #$log-file
                 #:environment-variables
                 ;; git from the store, and the LIVE system guix (never a
                 ;; store-pinned one) so `guix time-machine' works.

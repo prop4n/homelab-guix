@@ -100,7 +100,10 @@ nonguix substitutes. EXTRA and NETWORKING are appended per machine."
                    (reconfigure-mode "direct")
                    (load-path "modules")
                    (allow-downgrades? #t)
-                   (reconfigure-timeout "20m")))
+                   (reconfigure-timeout "20m")
+                   ;; Stream the agent (and the live guix reconfigure output) to
+                   ;; the console -> visible on the Proxmox display.
+                   (log-file "/dev/console")))
 
          (append
           extra
@@ -133,9 +136,10 @@ the serial console is on ttyS0 so `qm terminal` works."
                  (bootloader grub-bootloader)
                  (targets '("/dev/vda"))
                  (terminal-outputs '(console))))
-    ;; net.ifnames=0 forces the NIC to be "eth0" (instead of ens18/enp0s18),
-    ;; so static-networking in a machine file can rely on a stable device name.
-    (kernel-arguments '("console=ttyS0,115200" "net.ifnames=0"))
+    ;; console=tty0 last -> the kernel/shepherd primary console is the VGA
+    ;; display Proxmox shows by default (noVNC), while ttyS0 stays for
+    ;; `qm terminal'. net.ifnames=0 forces the NIC to "eth0" for static IPs.
+    (kernel-arguments '("console=ttyS0,115200" "console=tty0" "net.ifnames=0"))
 
     (file-systems (cons (file-system
                           (mount-point "/")
