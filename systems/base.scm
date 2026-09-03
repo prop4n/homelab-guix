@@ -15,7 +15,7 @@
 
 (define-module (systems base)
   #:use-module (gnu)
-  #:use-module (gnu packages certs)
+  #:use-module (gnu packages nss)
   #:use-module (guix channels)
   #:use-module (guix store)
   #:use-module (bitlatch services)
