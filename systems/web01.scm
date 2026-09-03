@@ -29,9 +29,11 @@
                        (name-servers '("1.1.1.1"))))))
  #:extra-services
  ;; nginx on :8083 — :8080 is taken by BitLatch's observability server.
+ ;; The document root is the ./web01-site directory, served straight from the
+ ;; store: edit the page, commit, and BitLatch redeploys it.
  (list (service nginx-service-type
                 (nginx-configuration
                  (server-blocks
                   (list (nginx-server-configuration
                          (listen '("8083"))
-                         (root "/srv/http"))))))))
+                         (root (local-file "web01-site" #:recursive? #t)))))))))
