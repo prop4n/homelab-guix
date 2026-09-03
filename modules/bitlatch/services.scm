@@ -249,7 +249,11 @@ separate one-shot config service could not reliably run before the daemon."
                 (list (string-append
                        "PATH=" #$(file-append git-minimal "/bin")
                        ":/run/current-system/profile/bin")
-                      "HOME=/var/lib/bitlatch")))
+                      "HOME=/var/lib/bitlatch"
+                      ;; CA bundle so git can verify HTTPS remotes (GitHub).
+                      "SSL_CERT_DIR=/etc/ssl/certs"
+                      "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt"
+                      "GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt")))
       (stop #~(make-kill-destructor))))))
 
 (define (bitlatch-activation config)

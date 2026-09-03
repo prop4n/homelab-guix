@@ -15,6 +15,7 @@
 
 (define-module (systems base)
   #:use-module (gnu)
+  #:use-module (gnu packages certs)
   #:use-module (guix channels)
   #:use-module (guix store)
   #:use-module (bitlatch services)
@@ -148,6 +149,7 @@ the serial console is on ttyS0 so `qm terminal` works."
                         %base-file-systems))
 
     (users %base-user-accounts)
-    (packages (append packages %base-packages))
+    ;; nss-certs populates /etc/ssl/certs so the agent can verify HTTPS remotes.
+    (packages (cons nss-certs (append packages %base-packages)))
     (services (%homelab-services #:extra extra-services
                                  #:networking networking))))
