@@ -33,7 +33,7 @@
 ;; Public keys allowed to log in as root. Replace with your own.
 (define %root-authorized-key
   (plain-file "root.pub"
-              "ssh-ed25519 AAAAREPLACE_ME_WITH_YOUR_PUBLIC_KEY comment"))
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN8oyx5PJ7iuyWDKPjRlJ2WT8/CjfumzFnzcr9XimPgc homelab-debug"))
 
 ;; The nonguix substitute server's signing key, so machines download its
 ;; prebuilt binaries instead of rebuilding from source.

@@ -1,2 +1,3 @@
 # Built image artifact (regenerable via image/build.sh)
 image/*.qcow2
+.ssh-debug/
